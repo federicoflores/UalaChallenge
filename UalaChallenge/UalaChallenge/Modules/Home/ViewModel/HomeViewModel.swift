@@ -26,7 +26,7 @@ class HomeViewModel: HomeViewModelProtocol {
             print(homeState)
         }
     }
-    private lazy var placesList: [UalaPlace] = []
+    lazy var placesList: [UalaPlace] = []
     
     func fetchPlaces() {
         homeState = .loading

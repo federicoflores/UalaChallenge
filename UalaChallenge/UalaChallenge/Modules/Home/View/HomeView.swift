@@ -18,7 +18,7 @@ struct HomeView: View {
             case .loading:
                 LoaderView()
             case .success:
-                let _ = print("Success")
+                successView
             }
         }
         .task {
@@ -31,6 +31,22 @@ struct HomeView: View {
         ErrorView(action: {
             viewModel.fetchPlaces()
         }, title: "Ups", subtitle:"There's been an error", buttonText: "Try again")
+    }
+    
+    fileprivate var successView: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading) {
+                ForEach(viewModel.placesList, id: \.self) { place in
+                    PlaceRowView(
+                        ualaPlace: place,
+                        isFavorite: place.isFavorite,
+                        completion: { isFavorite in
+                            place.isFavorite = isFavorite
+                            //TODO:: Persist data
+                        })
+                }
+            }
+        }
     }
         
     
