@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -15,9 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            let testViewController: UIViewController = UIViewController()
-            testViewController.view.backgroundColor = UIColor.red
-            window.rootViewController = UINavigationController(rootViewController: testViewController)
+            let hostingController: UIHostingController = UIHostingController(rootView: HomeView())
+            window.rootViewController = UINavigationController(rootViewController: hostingController)
             self.window = window
             window.makeKeyAndVisible()
         }
