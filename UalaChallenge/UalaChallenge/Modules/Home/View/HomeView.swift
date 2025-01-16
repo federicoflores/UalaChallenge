@@ -8,21 +8,29 @@
 import SwiftUI
 
 struct HomeView: View {
-    let provider: NetworkProvider = NetworkProvider()
+    @ObservedObject var viewModel:  HomeViewModel = HomeViewModel()
     
     var body: some View {
         VStack {
-            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-        }
-        .task {
-            do {
-                let test: [UalaPlace] = try await provider.getDecodable()
+            switch viewModel.homeState {
+            case .error:
+                errorView
+            case .loading:
+                LoaderView()
+            case .success:
                 let _ = print("Success")
-            } catch {
-                let _ = print("Failure")
-                let _ = print(error.localizedDescription)
             }
         }
+        .task {
+            viewModel.fetchPlaces()
+        }
+    }
+    
+    
+    fileprivate var errorView: some View {
+        ErrorView(action: {
+            viewModel.fetchPlaces()
+        }, title: "Ups", subtitle:"There's been an error", buttonText: "Try again")
     }
         
     
