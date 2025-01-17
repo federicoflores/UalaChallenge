@@ -10,6 +10,7 @@ import Foundation
 protocol HomeViewModelProtocol: ObservableObject {
     func fetchPlaces()
     func setUalaPlaces(input: String, onlyFavoritesIsOn: Bool) -> [UalaPlace]
+    func persistPlaceId(id: Int)
 }
 
 class HomeViewModel: HomeViewModelProtocol {
@@ -36,6 +37,7 @@ class HomeViewModel: HomeViewModelProtocol {
         Task {
             do {
                 var ualaPlaces: [UalaPlace] = try await provider.getDecodable()
+                updatePersistedFavoritesValuesifNeeded(ualaPlaces: ualaPlaces)
                 ualaPlaces.sort { $0.name.lowercased() < $1.name.lowercased() }
                 placesList.append(contentsOf: ualaPlaces)
                 await MainActor.run {
@@ -43,6 +45,15 @@ class HomeViewModel: HomeViewModelProtocol {
                 }
             } catch {
                 homeState = .error
+            }
+        }
+    }
+    
+    private func updatePersistedFavoritesValuesifNeeded(ualaPlaces: [UalaPlace]) {
+        guard let persistedPlacesId = UserDefaults.standard.array(forKey: "persistedPlacesId") as? [Int] else { return }
+        for placeId in persistedPlacesId {
+            if let index = ualaPlaces.firstIndex(where: {$0.id == placeId}) {
+                ualaPlaces[index].isFavorite = true
             }
         }
     }
@@ -61,5 +72,16 @@ class HomeViewModel: HomeViewModelProtocol {
             fileteredPlaces = fileteredPlaces.filter { $0.isFavorite }
         }
         return fileteredPlaces
+    }
+    
+    func persistPlaceId(id: Int) {
+        var persistedPlacesId = UserDefaults.standard.array(forKey: "persistedPlacesId") as? [Int]
+        persistedPlacesId = persistedPlacesId == nil ? [Int]() : persistedPlacesId
+        if let persistedPlaceId = persistedPlacesId, persistedPlaceId.contains(id) {
+            persistedPlacesId?.removeAll(where: { $0 == id })
+        } else {
+            persistedPlacesId?.append(id)
+        }
+        UserDefaults.standard.set(persistedPlacesId, forKey: "persistedPlacesId")
     }
 }

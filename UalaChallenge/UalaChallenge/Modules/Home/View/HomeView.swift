@@ -66,7 +66,7 @@ struct HomeView: View {
                         isFavorite: place.isFavorite,
                         completion: { isFavorite in
                             place.isFavorite = isFavorite
-                            //TODO:: Persist data
+                            viewModel.persistPlaceId(id: place.id)
                         })
                     .onTapGesture {
                         navigationController.pushViewController(MapViewModuleBuilder.build(place: place), animated: true)
