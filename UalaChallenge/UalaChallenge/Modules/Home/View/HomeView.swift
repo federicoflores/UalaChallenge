@@ -8,7 +8,15 @@
 import SwiftUI
 
 struct HomeView: View {
+    
+    @EnvironmentObject var navigationController: UINavigationController
     @ObservedObject var viewModel:  HomeViewModel = HomeViewModel()
+    @State private var searchInput: String = ""
+    @State private var showFavoritesOnly = false {
+        didSet {
+            print(showFavoritesOnly)
+        }
+    }
     
     var body: some View {
         VStack {
@@ -26,7 +34,6 @@ struct HomeView: View {
         }
     }
     
-    
     fileprivate var errorView: some View {
         ErrorView(action: {
             viewModel.fetchPlaces()
@@ -36,7 +43,12 @@ struct HomeView: View {
     fileprivate var successView: some View {
         ScrollView {
             LazyVStack(alignment: .leading) {
-                ForEach(viewModel.placesList, id: \.self) { place in
+                Toggle(isOn: $showFavoritesOnly) {
+                    Text("Favorites only")
+                        .font(.headline)
+                }
+                .padding(24)
+                ForEach(viewModel.setUalaPlaces(input: searchInput, onlyFavoritesIsOn: showFavoritesOnly), id: \.self) { place in
                     PlaceRowView(
                         ualaPlace: place,
                         isFavorite: place.isFavorite,
@@ -44,12 +56,14 @@ struct HomeView: View {
                             place.isFavorite = isFavorite
                             //TODO:: Persist data
                         })
+                    .onTapGesture {
+                        navigationController.pushViewController(MapViewModuleBuilder.build(place: place), animated: true)
+                    }
                 }
             }
+            .searchable(text: $searchInput, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search")
         }
     }
-        
-    
 }
 
 #Preview {

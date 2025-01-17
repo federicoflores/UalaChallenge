@@ -41,8 +41,8 @@ class UalaPlace: Decodable, Identifiable, Hashable {
 }
 
 struct Coordinate: Decodable, Hashable {
-    let longitude: Float
-    let latitude: Float
+    let longitude: Double
+    let latitude: Double
     
     enum CodingKeys: String, CodingKey {
         case longitude = "lon"
