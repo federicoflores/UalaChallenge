@@ -15,6 +15,10 @@ protocol HomeViewModelProtocol: ObservableObject {
 
 class HomeViewModel: HomeViewModelProtocol {
     
+    private enum Constants {
+        static let favoriteIdKey = "persistedPlacesId"
+    }
+    
     enum HomeState {
         case loading
         case success
@@ -50,7 +54,7 @@ class HomeViewModel: HomeViewModelProtocol {
     }
     
     private func updatePersistedFavoritesValuesifNeeded(ualaPlaces: [UalaPlace]) {
-        guard let persistedPlacesId = UserDefaults.standard.array(forKey: "persistedPlacesId") as? [Int] else { return }
+        guard let persistedPlacesId = UserDefaults.standard.array(forKey: Constants.favoriteIdKey) as? [Int] else { return }
         for placeId in persistedPlacesId {
             if let index = ualaPlaces.firstIndex(where: {$0.id == placeId}) {
                 ualaPlaces[index].isFavorite = true
@@ -75,13 +79,13 @@ class HomeViewModel: HomeViewModelProtocol {
     }
     
     func persistPlaceId(id: Int) {
-        var persistedPlacesId = UserDefaults.standard.array(forKey: "persistedPlacesId") as? [Int]
+        var persistedPlacesId = UserDefaults.standard.array(forKey: Constants.favoriteIdKey) as? [Int]
         persistedPlacesId = persistedPlacesId == nil ? [Int]() : persistedPlacesId
         if let persistedPlaceId = persistedPlacesId, persistedPlaceId.contains(id) {
             persistedPlacesId?.removeAll(where: { $0 == id })
         } else {
             persistedPlacesId?.append(id)
         }
-        UserDefaults.standard.set(persistedPlacesId, forKey: "persistedPlacesId")
+        UserDefaults.standard.set(persistedPlacesId, forKey: Constants.favoriteIdKey)
     }
 }

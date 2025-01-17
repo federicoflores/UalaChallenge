@@ -30,6 +30,7 @@ struct HomeView: View {
         }
     }
     
+    
     var body: some View {
         VStack {
             switch viewModel.homeState {
@@ -69,6 +70,7 @@ struct HomeView: View {
                             viewModel.persistPlaceId(id: place.id)
                         })
                     .onTapGesture {
+                        //Set flag to disable crash
                         navigationController.pushViewController(MapViewModuleBuilder.build(place: place), animated: true)
                     }
                 }

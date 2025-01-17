@@ -14,9 +14,29 @@ struct MapView: View {
         static let markerImage = "mappin"
     }
     
+    @State private var isPortrait = UIDevice.current.orientation.isPortrait
+
     var viewModel: MapViewModel
     
     var body: some View {
+        ZStack {
+            if isPortrait {
+                mapView
+            } else {
+                HStack {
+                    HomeView()
+                        .frame(maxWidth: .infinity)
+                    mapView
+                        .frame(maxWidth: .infinity)
+                }
+            }
+        }
+        .onRotate { deviceOrientation in
+            isPortrait = deviceOrientation.isPortrait
+        }
+    }
+    
+    private var mapView: some View {
         Map(initialPosition: MapCameraPosition.region(viewModel.region))  {
             Marker(coordinate: viewModel.region.center) {
                 Label(viewModel.city, systemImage: Constants.markerImage)
