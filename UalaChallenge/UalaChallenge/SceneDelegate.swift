@@ -9,18 +9,15 @@ import UIKit
 import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    
 
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            let navigationController = UINavigationController()
-            let homeView = HomeModuleBuilder.build()
-            let viewWithCoordinator = homeView.environmentObject(navigationController)
-            let hostingController = UIHostingController(rootView: viewWithCoordinator)
-            navigationController.setViewControllers([hostingController], animated: true)
-            window.rootViewController = navigationController
+            let homeViewWithinNavigationController = HomeModuleBuilder.build()
+            window.rootViewController = homeViewWithinNavigationController
             self.window = window
             window.makeKeyAndVisible()
         }

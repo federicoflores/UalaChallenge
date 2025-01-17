@@ -9,11 +9,19 @@ import UIKit
 import SwiftUI
 
 class HomeModuleBuilder {
-    static func build() -> some View {
+    
+    private enum Wording {
+        static let homeViewTitle: String = "Uala Places"
+    }
+    
+    static func build() -> UINavigationController {
+        let navigationController = UINavigationController()
         let homeViewModel: any HomeViewModelProtocol = HomeViewModel()
         let homeView: HomeView = HomeView(viewModel: homeViewModel as? HomeViewModel ?? HomeViewModel())
-//        let hosting = UIHostingController(rootView: homeView)
-//        hosting.title = "Home View"
-        return homeView
+        let viewWithCoordinator = homeView.environmentObject(navigationController)
+        let hostingController = UIHostingController(rootView: viewWithCoordinator)
+        hostingController.title = Wording.homeViewTitle
+        navigationController.setViewControllers([hostingController], animated: true)
+        return navigationController
     }
 }

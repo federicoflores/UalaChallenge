@@ -9,12 +9,17 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
+    
+    private enum Constants {
+        static let markerImage = "mappin"
+    }
+    
     var viewModel: MapViewModel
     
     var body: some View {
         Map(initialPosition: MapCameraPosition.region(viewModel.region))  {
             Marker(coordinate: viewModel.region.center) {
-                Label(viewModel.city, systemImage: "mappin")
+                Label(viewModel.city, systemImage: Constants.markerImage)
             }
         }
     }

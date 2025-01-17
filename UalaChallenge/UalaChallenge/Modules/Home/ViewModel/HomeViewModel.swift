@@ -28,14 +28,15 @@ class HomeViewModel: HomeViewModelProtocol {
         }
     }
     private lazy var placesList: [UalaPlace] = []
-    var fileteredPlaces: [UalaPlace] = []
+    lazy var fileteredPlaces: [UalaPlace] = []
     
     func fetchPlaces() {
+        guard placesList.isEmpty else { return }
         homeState = .loading
         Task {
             do {
                 var ualaPlaces: [UalaPlace] = try await provider.getDecodable()
-                ualaPlaces = ualaPlaces.sorted { $0.name.lowercased() < $1.name.lowercased() }
+                ualaPlaces.sort { $0.name.lowercased() < $1.name.lowercased() }
                 placesList.append(contentsOf: ualaPlaces)
                 await MainActor.run {
                     homeState = .success

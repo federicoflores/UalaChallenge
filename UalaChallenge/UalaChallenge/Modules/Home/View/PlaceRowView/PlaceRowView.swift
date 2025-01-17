@@ -8,6 +8,24 @@
 import SwiftUI
 
 struct PlaceRowView: View {
+    
+    private enum Constants {
+        static let buttonMaxWidth: CGFloat = 50
+        static let buttonMaxHeight: CGFloat = 50
+        static let buttonMaxPadding: CGFloat = 4
+        static let cityTextFontSize: CGFloat = 24
+        static let textLineLimit = 1
+        static let cityTextMinimunScale = 0.8
+        static let starFillImage = "star.circle.fill"
+        static let starImage = "star.circle"
+        static let divider: String = " - "
+    }
+    
+    private enum Wording {
+        static let latitude: String = "Lat :"
+        static let longitude: String = "Lon :"
+    }
+    
     typealias ButtonCompletion = ((Bool)->())
     
     let ualaPlace: UalaPlace
@@ -20,33 +38,33 @@ struct PlaceRowView: View {
                 isFavorite.toggle()
                 completion?(isFavorite)
             } label: {
-                Image(systemName: isFavorite ? "star.circle.fill" : "star.circle")
+                Image(systemName: isFavorite ? Constants.starFillImage : Constants.starImage)
                     .resizable()
                     .scaledToFit()
                     .frame(alignment: .leading)
                     .tint(.yellow)
             }
-                .frame(maxWidth: 50, maxHeight: 50)
-                .padding(4)
+            .frame(maxWidth: Constants.buttonMaxWidth, maxHeight: Constants.buttonMaxWidth)
+            .padding(Constants.buttonMaxPadding)
             VStack(alignment: .leading) {
-                Text(ualaPlace.name + " - " + ualaPlace.country)
-                    .font(.system(size: 24, weight: .bold, design: .monospaced))
-                    .lineLimit(1)
-                    .padding(0)
-                    .minimumScaleFactor(0.8)
+                Text(ualaPlace.name + Constants.divider + ualaPlace.country)
+                    .font(.system(size: Constants.cityTextFontSize, weight: .bold, design: .monospaced))
+                    .lineLimit(Constants.textLineLimit)
+                    .padding(.zero)
+                    .minimumScaleFactor(Constants.cityTextMinimunScale)
                 HStack {
-                    Text("Lat :" + "\(ualaPlace.coordinate.latitude)")
+                    Text(Wording.latitude + "\(ualaPlace.coordinate.latitude)")
                         .font(.subheadline)
-                        .lineLimit(1)
+                        .lineLimit(Constants.textLineLimit)
                         .foregroundColor(.gray)
-                        .padding(0)
-                    Text("-")
+                        .padding(.zero)
+                    Text(Constants.divider)
                         .font(.subheadline)
-                        .lineLimit(1)
+                        .lineLimit(Constants.textLineLimit)
                         .foregroundColor(.gray)
-                    Text("Lon: " + "\(ualaPlace.coordinate.longitude)")
+                    Text(Wording.longitude + "\(ualaPlace.coordinate.longitude)")
                         .font(.subheadline)
-                        .lineLimit(1)
+                        .lineLimit(Constants.textLineLimit)
                         .foregroundColor(.gray)
                 }
             }
