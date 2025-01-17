@@ -15,8 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            let homeViewWithinNavigationController = HomeModuleBuilder.build()
-            window.rootViewController = homeViewWithinNavigationController
+            window.rootViewController = AppNavigation.shared.startingViewController()
             self.window = window
             window.makeKeyAndVisible()
         }
@@ -52,6 +51,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 }
-
-
-extension UINavigationController: @retroactive ObservableObject {}

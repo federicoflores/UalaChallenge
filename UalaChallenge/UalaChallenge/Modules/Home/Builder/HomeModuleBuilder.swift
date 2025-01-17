@@ -14,14 +14,10 @@ class HomeModuleBuilder {
         static let homeViewTitle: String = "Uala Places"
     }
     
-    static func build() -> UINavigationController {
-        let navigationController = UINavigationController()
+    static func build() -> HomeView {
         let homeViewModel: any HomeViewModelProtocol = HomeViewModel()
         let homeView: HomeView = HomeView(viewModel: homeViewModel as? HomeViewModel ?? HomeViewModel())
-        let viewWithCoordinator = homeView.environmentObject(navigationController)
-        let hostingController = UIHostingController(rootView: viewWithCoordinator)
-        hostingController.title = Wording.homeViewTitle
-        navigationController.setViewControllers([hostingController], animated: true)
-        return navigationController
+        return homeView
     }
+    
 }

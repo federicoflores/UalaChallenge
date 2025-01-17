@@ -9,7 +9,7 @@ import SwiftUI
 import MapKit
 
 class MapViewModuleBuilder {
-    static func build(place: UalaPlace) -> UIViewController {
+    static func build(place: UalaPlace) -> MapView {
         let mapViewModel = MapViewModel(
             city: place.name,
             region: MKCoordinateRegion(
@@ -18,9 +18,7 @@ class MapViewModuleBuilder {
                 longitude: place.coordinate.longitude) ,
             span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)))
         let mapView: MapView = MapView(viewModel: mapViewModel)
-        let hosting = UIHostingController(rootView: mapView)
-        hosting.title = "Map view"
-        return hosting
+        return mapView
     }
 }
 

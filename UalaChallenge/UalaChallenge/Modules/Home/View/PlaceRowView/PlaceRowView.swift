@@ -42,7 +42,7 @@ struct PlaceRowView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(alignment: .leading)
-                    .tint(.yellow)
+                    .tint(.blue)
             }
             .frame(maxWidth: Constants.buttonMaxWidth, maxHeight: Constants.buttonMaxWidth)
             .padding(Constants.buttonMaxPadding)

@@ -21,7 +21,7 @@ struct HomeView: View {
         static let searchBarPrompt = "Search"
     }
     
-    @EnvironmentObject var navigationController: UINavigationController
+    @EnvironmentObject var navigator: UINavigationController
     @ObservedObject var viewModel:  HomeViewModel = HomeViewModel()
     @State private var searchInput: String = ""
     @State private var showFavoritesOnly = false {
@@ -29,7 +29,6 @@ struct HomeView: View {
             print(showFavoritesOnly)
         }
     }
-    
     
     var body: some View {
         VStack {
@@ -70,8 +69,7 @@ struct HomeView: View {
                             viewModel.persistPlaceId(id: place.id)
                         })
                     .onTapGesture {
-                        //Set flag to disable crash
-                        navigationController.pushViewController(MapViewModuleBuilder.build(place: place), animated: true)
+                        navigator.navigateTo(route: .mapScreen(place: place))
                     }
                 }
             }

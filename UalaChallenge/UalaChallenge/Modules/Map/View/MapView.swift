@@ -24,7 +24,7 @@ struct MapView: View {
                 mapView
             } else {
                 HStack {
-                    HomeView()
+                    HomeModuleBuilder.build()
                         .frame(maxWidth: .infinity)
                     mapView
                         .frame(maxWidth: .infinity)
