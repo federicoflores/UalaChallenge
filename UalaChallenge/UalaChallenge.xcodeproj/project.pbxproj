@@ -30,6 +30,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8078AA6A2D3AFEC200D62C65 /* Exceptions for "UalaChallengeTests" folder in "UalaChallenge" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				MockedResponses/homePlaces.json,
+			);
+			target = 80E746192D395006002041EB /* UalaChallenge */;
+		};
 		80E746422D39500C002041EB /* Exceptions for "UalaChallenge" folder in "UalaChallenge" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -50,6 +57,9 @@
 		};
 		80E746332D39500C002041EB /* UalaChallengeTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8078AA6A2D3AFEC200D62C65 /* Exceptions for "UalaChallengeTests" folder in "UalaChallenge" target */,
+			);
 			path = UalaChallengeTests;
 			sourceTree = "<group>";
 		};

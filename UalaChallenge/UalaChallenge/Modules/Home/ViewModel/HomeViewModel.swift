@@ -11,6 +11,8 @@ protocol HomeViewModelProtocol: ObservableObject {
     func fetchPlaces()
     func setUalaPlaces(input: String, onlyFavoritesIsOn: Bool) -> [UalaPlace]
     func persistPlaceId(id: Int)
+    func getPlaceList() -> [UalaPlace]
+    var provider: NetworkProviderProtocol? { get set }
 }
 
 class HomeViewModel: HomeViewModelProtocol {
@@ -25,7 +27,7 @@ class HomeViewModel: HomeViewModelProtocol {
         case error
     }
 
-    let provider: NetworkProvider = NetworkProvider()
+    var provider: NetworkProviderProtocol?
     
     @Published var homeState: HomeState = .loading {
         didSet {
@@ -35,11 +37,16 @@ class HomeViewModel: HomeViewModelProtocol {
     private lazy var placesList: [UalaPlace] = []
     lazy var fileteredPlaces: [UalaPlace] = []
     
+    func getPlaceList() -> [UalaPlace] {
+        placesList
+    }
+    
     func fetchPlaces() {
         guard placesList.isEmpty else { return }
         homeState = .loading
         Task {
             do {
+                guard let provider else { return }
                 var ualaPlaces: [UalaPlace] = try await provider.getDecodable()
                 updatePersistedFavoritesValuesifNeeded(ualaPlaces: ualaPlaces)
                 ualaPlaces.sort { $0.name.lowercased() < $1.name.lowercased() }
@@ -48,7 +55,9 @@ class HomeViewModel: HomeViewModelProtocol {
                     homeState = .success
                 }
             } catch {
-                homeState = .error
+                await MainActor.run {
+                    homeState = .error
+                }
             }
         }
     }

@@ -16,6 +16,7 @@ class HomeModuleBuilder {
     
     static func build() -> HomeView {
         let homeViewModel: any HomeViewModelProtocol = HomeViewModel()
+        homeViewModel.provider = NetworkProvider()
         let homeView: HomeView = HomeView(viewModel: homeViewModel as? HomeViewModel ?? HomeViewModel())
         return homeView
     }
