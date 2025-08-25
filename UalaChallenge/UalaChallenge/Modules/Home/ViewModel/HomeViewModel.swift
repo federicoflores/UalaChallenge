@@ -7,11 +7,12 @@
 
 import Foundation
 
-protocol HomeViewModelProtocol: ObservableObject {
+protocol HomeViewModelProtocol: AnyObject, ObservableObject {
     func fetchPlaces()
     func setUalaPlaces(input: String, onlyFavoritesIsOn: Bool) -> [UalaPlace]
     func persistPlaceId(id: Int)
     func getPlaceList() -> [UalaPlace]
+    var searchInput: String { get set }
     var provider: NetworkProviderProtocol? { get set }
 }
 
@@ -34,6 +35,9 @@ class HomeViewModel: HomeViewModelProtocol {
             print(homeState)
         }
     }
+    
+    @Published var searchInput: String = ""
+    
     private lazy var placesList: [UalaPlace] = []
     lazy var fileteredPlaces: [UalaPlace] = []
     

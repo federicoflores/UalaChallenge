@@ -38,6 +38,23 @@ final class HomeViewModelTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 5)
     }
+    
+    func testUserInput() {
+        let expectation = XCTestExpectation()
+        expectation.expectedFulfillmentCount = 2
+        self.sut?.fetchPlaces()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            expectation.fulfill()
+            let _ = self.sut?.setUalaPlaces(input: "al", onlyFavoritesIsOn: false)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                expectation.fulfill()
+                let listResponse = self.sut?.fileteredPlaces
+                XCTAssertTrue(listResponse?.count == 1)
+                XCTAssertTrue(listResponse?.first?.name == "Alcoy")
+            }
+        }
+        wait(for: [expectation], timeout: 5)
+    }
 
     override func tearDownWithError() throws {
         provider = nil

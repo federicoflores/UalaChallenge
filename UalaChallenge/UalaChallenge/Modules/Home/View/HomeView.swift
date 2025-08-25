@@ -22,12 +22,15 @@ struct HomeView: View {
     }
     
     @EnvironmentObject var navigator: UINavigationController
-    @ObservedObject var viewModel:  HomeViewModel = HomeViewModel()
-    @State private var searchInput: String = ""
+    @ObservedObject var viewModel: HomeViewModel
     @State private var showFavoritesOnly = false {
         didSet {
             print(showFavoritesOnly)
         }
+    }
+    
+    init(viewModel: HomeViewModel) {
+        self.viewModel = viewModel
     }
     
     var body: some View {
@@ -60,7 +63,7 @@ struct HomeView: View {
                         .font(.headline)
                 }
                 .padding(Constants.tooglePadding)
-                ForEach(viewModel.setUalaPlaces(input: searchInput, onlyFavoritesIsOn: showFavoritesOnly), id: \.self) { place in
+                ForEach(viewModel.setUalaPlaces(input: viewModel.searchInput, onlyFavoritesIsOn: showFavoritesOnly), id: \.self) { place in
                     PlaceRowView(
                         ualaPlace: place,
                         isFavorite: place.isFavorite,
@@ -73,11 +76,11 @@ struct HomeView: View {
                     }
                 }
             }
-            .searchable(text: $searchInput, placement: .navigationBarDrawer(displayMode: .always), prompt: Localizables.searchBarPrompt)
+            .searchable(text: $viewModel.searchInput, placement: .navigationBarDrawer(displayMode: .always), prompt: Localizables.searchBarPrompt)
         }
     }
 }
 
 #Preview {
-    HomeView()
+    HomeView(viewModel: HomeViewModel())
 }
