@@ -45,7 +45,7 @@ final class HomeViewModelTests: XCTestCase {
         self.sut?.fetchPlaces()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             expectation.fulfill()
-            let _ = self.sut?.setUalaPlaces(input: "al", onlyFavoritesIsOn: false)
+            self.sut?.setUalaPlaces(input: "al", onlyFavoritesIsOn: false)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 expectation.fulfill()
                 let listResponse = self.sut?.fileteredPlaces

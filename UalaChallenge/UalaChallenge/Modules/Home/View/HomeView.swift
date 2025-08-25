@@ -23,11 +23,6 @@ struct HomeView: View {
     
     @EnvironmentObject var navigator: UINavigationController
     @ObservedObject var viewModel: HomeViewModel
-    @State private var showFavoritesOnly = false {
-        didSet {
-            print(showFavoritesOnly)
-        }
-    }
     
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
@@ -58,12 +53,12 @@ struct HomeView: View {
     fileprivate var successView: some View {
         ScrollView {
             LazyVStack(alignment: .leading) {
-                Toggle(isOn: $showFavoritesOnly) {
+                Toggle(isOn: $viewModel.showFavoritesOnly) {
                     Text(Localizables.toggleText)
                         .font(.headline)
                 }
                 .padding(Constants.tooglePadding)
-                ForEach(viewModel.setUalaPlaces(input: viewModel.searchInput, onlyFavoritesIsOn: showFavoritesOnly), id: \.self) { place in
+                ForEach(viewModel.fileteredPlaces, id: \.self) { place in
                     PlaceRowView(
                         ualaPlace: place,
                         isFavorite: place.isFavorite,

@@ -6,20 +6,24 @@
 //
 
 import Foundation
+import Combine
 
 protocol HomeViewModelProtocol: AnyObject, ObservableObject {
     func fetchPlaces()
-    func setUalaPlaces(input: String, onlyFavoritesIsOn: Bool) -> [UalaPlace]
+    func setUalaPlaces(input: String, onlyFavoritesIsOn: Bool) //Keep in protocol just for testing purposes
+    var fileteredPlaces: [UalaPlace] { get set }
     func persistPlaceId(id: Int)
     func getPlaceList() -> [UalaPlace]
     var searchInput: String { get set }
     var provider: NetworkProviderProtocol? { get set }
+    var showFavoritesOnly: Bool { get set }
 }
 
 class HomeViewModel: HomeViewModelProtocol {
     
     private enum Constants {
         static let favoriteIdKey = "persistedPlacesId"
+        static let debounceTime: Int = 500
     }
     
     enum HomeState {
@@ -27,19 +31,30 @@ class HomeViewModel: HomeViewModelProtocol {
         case success
         case error
     }
-
+    
     var provider: NetworkProviderProtocol?
     
-    @Published var homeState: HomeState = .loading {
+    @Published var homeState: HomeState = .loading
+    @Published var searchInput: String = ""
+    @Published var fileteredPlaces: [UalaPlace] = []
+    @Published var showFavoritesOnly = false {
         didSet {
-            print(homeState)
+            setUalaPlaces(input: searchInput, onlyFavoritesIsOn: showFavoritesOnly)
         }
     }
     
-    @Published var searchInput: String = ""
-    
     private lazy var placesList: [UalaPlace] = []
-    lazy var fileteredPlaces: [UalaPlace] = []
+    private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        $searchInput
+            .debounce(for: .milliseconds(Constants.debounceTime), scheduler: RunLoop.main)
+            .sink { [weak self] debouncedText in
+                self?.setUalaPlaces(input: debouncedText, onlyFavoritesIsOn: self?.showFavoritesOnly ?? false)
+            }
+            .store(in: &cancellables)
+    }
+    
     
     func getPlaceList() -> [UalaPlace] {
         placesList
@@ -55,6 +70,10 @@ class HomeViewModel: HomeViewModelProtocol {
                 updatePersistedFavoritesValuesifNeeded(ualaPlaces: ualaPlaces)
                 ualaPlaces.sort { $0.name.lowercased() < $1.name.lowercased() }
                 placesList.append(contentsOf: ualaPlaces)
+                await MainActor.run {
+                    fileteredPlaces = placesList
+                }
+                
                 await MainActor.run {
                     homeState = .success
                 }
@@ -75,20 +94,20 @@ class HomeViewModel: HomeViewModelProtocol {
         }
     }
     
-    func setUalaPlaces(input: String, onlyFavoritesIsOn: Bool) -> [UalaPlace] {
+    func setUalaPlaces(input: String, onlyFavoritesIsOn: Bool) {
         guard !input.isEmpty else {
             guard onlyFavoritesIsOn else {
-                return placesList
+                fileteredPlaces = placesList
+                return
             }
             fileteredPlaces = placesList.filter { $0.isFavorite }
-            return fileteredPlaces
+            return
         }
         
         fileteredPlaces = placesList.filter { $0.name.lowercased().hasPrefix(input.lowercased())}
         if onlyFavoritesIsOn {
             fileteredPlaces = fileteredPlaces.filter { $0.isFavorite }
         }
-        return fileteredPlaces
     }
     
     func persistPlaceId(id: Int) {
